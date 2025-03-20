@@ -18,8 +18,8 @@ export class CamerasService {
     return this.cameraModel.create(createCameraDto);
   }
 
-  async findAll(): Promise<Camera[]> {
-    return this.cameraModel.find().exec();
+  async findAll(query: any): Promise<Camera[]> {
+    return this.cameraModel.find(query).exec();
   }
 
   async findOne(id: string): Promise<Camera> {
