@@ -20,4 +20,4 @@ export class Camera {
 }
 
 // esquema Mongoose creado a partir de la clase Camera
-export const BookSchema = SchemaFactory.createForClass(Camera);
+export const CameraSchema = SchemaFactory.createForClass(Camera);
