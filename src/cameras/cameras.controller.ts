@@ -42,7 +42,7 @@ export class CamerasController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Eliminar una cámara por ID' })
+  @ApiOperation({ summary: 'Actualizar una cámara por ID' })
   async update(@Param('id') id: string, @Body() updateCameraDto: UpdateCameraDto) {
     return await this.camerasService.update(id, updateCameraDto);
   }
