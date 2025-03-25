@@ -1,7 +1,6 @@
-import { Req, Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 // decorador de OpenAPI para agrupar los endpoints en Swagger UI
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger'; 
-
 import { CamerasService } from './cameras.service';
 import { CreateCameraDto } from './dto/create-camera.dto';
 import { UpdateCameraDto } from './dto/update-camera.dto';

@@ -20,8 +20,8 @@ export class UsersService {
   }
 
   // en este caso se devuelve una promesa con lista de usuarios
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(query: any): Promise<User[]> {
+    return this.userModel.find(query).exec();
   }
 
   // en este caso la id es un string para que pueda trabajar con Mongo
