@@ -4,6 +4,7 @@ import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { CamerasService } from './cameras.service';
 import { CreateCameraDto } from './dto/create-camera.dto';
 import { UpdateCameraDto } from './dto/update-camera.dto';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
 
 @Controller('cameras')
 @ApiTags('Cameras') // agrupar los endpoints para una etiqueta en Swagger UI
@@ -28,7 +29,7 @@ export class CamerasController {
   @ApiOperation({ summary: 'Obtener una cámara por ID' })
   @ApiResponse({ status: 200, description: 'Cámara encontrada' })
   @ApiResponse({ status: 404, description: 'Cámara no encontrada' })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseObjectIdPipe) id: string) {
     try{
       const camera = await this.camerasService.findOne(id);
       if (!camera){
@@ -42,13 +43,13 @@ export class CamerasController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una cámara por ID' })
-  async update(@Param('id') id: string, @Body() updateCameraDto: UpdateCameraDto) {
+  async update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateCameraDto: UpdateCameraDto) {
     return await this.camerasService.update(id, updateCameraDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar una cámara por ID' })
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id', ParseObjectIdPipe) id: string) {
     return await this.camerasService.remove(id);
   }
 }
