@@ -7,7 +7,7 @@ import { User, UserSchema } from './schemas/user.schemas';
 
 @Module({
   imports: [
-    // registro del esquema de usuario
+    // registro del esquema de usuario con Mongoose
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
   ],
   controllers: [UsersController],

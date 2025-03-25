@@ -12,4 +12,4 @@ export class CreateUserDto {
   
     @ApiProperty({ example: 'Spain' })
     readonly country: string;
-  }
+}

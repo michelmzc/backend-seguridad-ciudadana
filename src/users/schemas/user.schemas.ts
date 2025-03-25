@@ -8,7 +8,7 @@ export type UserDocument = User & Document;
 @Schema()
 export class User {
     @Prop()
-    _id: string; // gestión del id desde el código, saltamos mongo
+    _id: string; // gestión del id desde el código, en lugar de mongo
 
     @Prop()
     name: string;
