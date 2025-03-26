@@ -1,5 +1,5 @@
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose"
-import  mongoose, { Document } from "mongoose";
+import  mongoose, { Document, Types } from "mongoose";
 import { User } from 'src/users/schemas/user.schemas';
 
 // definición del tipo de un documento libro
@@ -19,9 +19,9 @@ export class Camera {
     @Prop([String]) // indicación de tipo no primitivos para prueba
     keywords: string[];
 
-    // dueño(s) de las cámaras 
-    @Prop({ type: mongoose.Schema.Types.String, ref: 'User'})
-    owner: User;
+    // dueño(s) de las cámaras (puede ser null si no está asignada)
+    @Prop({ type: Types.ObjectId, ref: 'User', default: null})
+    owner: Types.ObjectId | User;
 }
 
 // esquema Mongoose creado a partir de la clase Camera

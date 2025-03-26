@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-
+import { User } from "src/users/schemas/user.schemas";
 
 export class CreateCameraDto {
     // decorador para definir una propiedad para la documentación en Swagger OpenAPI
@@ -15,4 +15,6 @@ export class CreateCameraDto {
         example: ['NestJS', 'REST API']
     })
     readonly keywords: string []; // ejemplo con un array
+
+    readonly owner: User;
 }

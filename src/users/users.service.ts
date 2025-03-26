@@ -59,4 +59,13 @@ export class UsersService {
     user.save()
     return user;
   }
+
+  // obtener usuario con sus cámaras 
+  async findOneWithCameras(userId: string): Promise<User>{
+    const user = await this.userModel.findById(userId).populate('cameras').exec();
+    if (!user) {
+      throw new NotFoundException(`User with ID: ${userId} not found`)
+    }
+    return user;
+  }
 }

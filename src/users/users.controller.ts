@@ -46,4 +46,9 @@ export class UsersController {
   ){
     return this.usersService.addCamera(id, camera); // llamamos al servicio que agrega la cámara
   }
+
+  @Get(':id/cameras')
+  getUserWithCameras(@Param('id') userId: string){
+    return this.usersService.findOneWithCameras(userId);
+  }
 }

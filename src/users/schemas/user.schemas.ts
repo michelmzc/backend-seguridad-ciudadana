@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose'; // importamos desde mongoose
+import { Document, Types } from 'mongoose'; // importamos desde mongoose
 import { Camera, CameraSchema } from 'src/cameras/schemas/camera.schema';
 
 // definición del tipo de documento usuario
@@ -9,20 +9,19 @@ export type UserDocument = User & Document;
 @Schema()
 export class User {
     @Prop()
-    _id: string; // gestión del id desde el código, en lugar de mongo
-
-    @Prop()
     name: string;
 
-    @Prop()
+    @Prop({ unique: true })
     email: string;
 
     @Prop()
     country: string;
 
-    // camaras que posee el usuario 
-    @Prop([CameraSchema]) // configuramos el tipo porque no es tipo primitivo
-    cameras: Camera[]; // 
+    // relación con las cámaras 
+    //  cada usuario tiene un array de ObjectId[] apuntando a Camera
+    //  se usa default: [] para evitar valores undefined
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'Camera' }], default: [] })
+    cameras: Types.ObjectId[] | Camera[]; 
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -52,4 +52,14 @@ export class CamerasController {
   async remove(@Param('id', ParseObjectIdPipe) id: string) {
     return await this.camerasService.remove(id);
   }
+
+  @Patch(':cameraId/assign/:userId')
+  assignCamera(@Param('cameraId') cameraId: string, @Param('userId') userId: string) {
+    return this.camerasService.assignCameraToUser(userId, cameraId);
+  }
+
+  @Patch(':cameraId/reassign/:newUserId')
+  reassignCamera(@Param('cameraId') cameraId: string, @Param('newUserId') newUserId: string) {
+    return this.camerasService.reassignCamera(cameraId, newUserId);
+  }
 }
