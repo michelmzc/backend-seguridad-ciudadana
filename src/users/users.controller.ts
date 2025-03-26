@@ -3,7 +3,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { ParseObjectIdPipe } from 'src/utilities/parse-object-id-pipe';
+import { CreateCameraDto } from 'src/cameras/dto/create-camera.dto';
 
 
 @Controller('users')
@@ -35,5 +36,14 @@ export class UsersController {
   @Delete(':id')
   async remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.usersService.remove(id);
+  }
+
+  // ruta para agregar cámaras al usuario
+  @Post(':id/cameras')
+  async addCamera(
+    @Param('id') id: string, // captura de parámetro y aplicación de pipe que compruena ID
+    @Body() camera: CreateCameraDto // pasamos dto de camara en el cuerpo
+  ){
+    return this.usersService.addCamera(id, camera); // llamamos al servicio que agrega la cámara
   }
 }

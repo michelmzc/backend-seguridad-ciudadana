@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schemas';
+import { CameraDocument } from 'src/cameras/schemas/camera.schema';
 
 @Injectable()
 export class UsersService {
@@ -44,5 +45,18 @@ export class UsersService {
 
   async remove(id: string) {
     return this.userModel.findByIdAndDelete({ _id: id}).exec();
+  }
+
+  // método para agregar una cámara a un usuario (dueño)
+  async addCamera(id: string, camera: any){
+    // recuperamos usuario con su ID
+    let user: UserDocument | null = await this.userModel.findById(id);
+    if (!user){
+      throw new NotFoundException(`User with ID ${id} not found`)
+    }
+    // agregamos la cámara a la lista de cámara del usuario
+    user.cameras.push(camera);
+    user.save()
+    return user;
   }
 }

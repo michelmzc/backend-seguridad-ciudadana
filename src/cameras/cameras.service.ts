@@ -46,4 +46,6 @@ export class CamerasService {
   async remove(id: string) {
     return this.cameraModel.findByIdAndDelete({ _id: id}).exec();
   }
+
+  
 }
