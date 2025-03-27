@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schemas';
-import { CameraDocument } from 'src/cameras/schemas/camera.schema';
+import { bcrypt } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -17,7 +17,24 @@ export class UsersService {
   // las llamadas a mongo son asincrónas y devuelven promesas
   // en este caso recibe el DTO del usuario
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.userModel.create(createUserDto);
+    const { phoneNumber, password } = createUserDto;
+
+    // verificar si el número ya está registrado
+    const existingUser = await this.userModel.findOne({ phoneNumber });
+    if (existingUser) {
+      throw new Error('El número de teléfono ya está registrado.');
+    }
+
+    // encriptar la contraseña antes de guardarla
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // crear el usuario con la contraseña encriptada
+    const newUser = new this.userModel({
+      phoneNumber,
+      password: hashedPassword
+    });
+
+    return newUser.save()
   }
 
   // en este caso se devuelve una promesa con lista de usuarios
@@ -72,5 +89,10 @@ export class UsersService {
   // encontrar usuario por username
   async findOneByUsername(username: string): Promise<UserDocument | null>{
     return await this.userModel.findOne({ username }).exec();
+  }
+
+  // buscar por número de teléfono 
+  async findOneByPhoneNumber(phoneNumber: string): Promise<UserDocument | null>{
+    return this.userModel.findOne({phoneNumber}).exec();
   }
 }

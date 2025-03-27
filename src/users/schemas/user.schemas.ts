@@ -11,6 +11,9 @@ export class User {
     @Prop()
     name: string;
 
+    @Prop({ required: true, unique: true })
+    phoneNumber: string;
+
     @Prop({ unique: true })
     email: string;
 

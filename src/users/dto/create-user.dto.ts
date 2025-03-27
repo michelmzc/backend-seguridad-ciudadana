@@ -6,6 +6,12 @@ export class CreateUserDto {
   
     @ApiProperty({ example: 'johndoe@gmail.com' })
     readonly email: string;
+
+    @ApiProperty({ example: '+56912345678'})
+    readonly phoneNumber: string;
+
+    @ApiProperty({ example: '****'})
+    readonly password: string;
   
     @ApiProperty({ example: 'Spain' })
     readonly country: string;
