@@ -68,4 +68,9 @@ export class UsersService {
     }
     return user;
   }
+
+  // encontrar usuario por username
+  async findOneByUsername(username: string): Promise<UserDocument | null>{
+    return await this.userModel.findOne({ username }).exec();
+  }
 }

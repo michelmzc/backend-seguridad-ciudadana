@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Req, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 // decorador de OpenAPI para agrupar los endpoints en Swagger UI
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger'; 
 import { CamerasService } from './cameras.service';
@@ -62,4 +62,5 @@ export class CamerasController {
   reassignCamera(@Param('cameraId') cameraId: string, @Param('newUserId') newUserId: string) {
     return this.camerasService.reassignCamera(cameraId, newUserId);
   }
+
 }

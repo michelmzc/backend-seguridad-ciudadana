@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCameraDto } from './dto/create-camera.dto';
 import { UpdateCameraDto } from './dto/update-camera.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -86,6 +86,28 @@ export class CamerasService {
     await this.userModel.findByIdAndUpdate(newUserId, { $addToSet: { cameras: cameraId } });
 
     return { message: `Cámara ${cameraId} reasignada de ${oldUserId} a ${newUserId}` };
+  }
+
+  async removeCameraFromUser(cameraId: string, userId: string){
+    const camera = await this.cameraModel.findById(cameraId);
+
+    if(!camera){
+      throw new NotFoundException(`Camera with ID ${cameraId} not found`)
+    }
+
+    // verificar si la camara pertenece al usuario
+    if (camera.owner !== null){
+      if (camera.owner.toString() !== userId){
+        throw new ForbiddenException(`Not allowed to remove camera`)
+      }
+    }
+
+    // remover el dueño sin borrar la cámara
+    camera.owner = null; 
+    await camera.save();
+
+    return { message: 'Camera property deleted' }
+
   }
 
 }

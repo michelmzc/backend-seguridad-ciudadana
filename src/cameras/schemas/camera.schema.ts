@@ -21,7 +21,7 @@ export class Camera {
 
     // dueño(s) de las cámaras (puede ser null si no está asignada)
     @Prop({ type: Types.ObjectId, ref: 'User', default: null})
-    owner: Types.ObjectId | User;
+    owner: Types.ObjectId | User | null;
 }
 
 // esquema Mongoose creado a partir de la clase Camera
