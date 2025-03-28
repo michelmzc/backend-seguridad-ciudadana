@@ -1,8 +1,10 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags('Autentificación')
 export class AuthController{
     constructor(private authService: AuthService) {}
 
@@ -13,7 +15,8 @@ export class AuthController{
     }
 
     @Post('register')
-    async register(createUserDto: CreateUserDto){
+    async register(@Body() createUserDto: CreateUserDto){
+        console.log(createUserDto);
         return this.authService.register(createUserDto);
     }
 }

@@ -27,6 +27,12 @@ export class UsersController {
   async findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.usersService.findOne(id);
   }
+  
+  @Get(':phoneNumber')
+  async findByPhone(@Param('phoneNumber') phoneNumber: string){
+    return this.usersService.findOneByPhoneNumber(phoneNumber);
+  }
+
 
   @Patch(':id')
   async update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateUserDto: UpdateUserDto) {

@@ -13,6 +13,9 @@ import { User, UserSchema } from './schemas/user.schemas';
   controllers: [UsersController],
   providers: [UsersService],
   // para que otros modulos puedan acceder a UserModel
-  exports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])]
+  exports: [
+    UsersService,
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
+  ]
 })
 export class UsersModule {}
