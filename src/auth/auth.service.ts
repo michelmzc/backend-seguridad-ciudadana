@@ -8,13 +8,15 @@ import { UsersService } from 'src/users/users.service';
 export class AuthService {
     constructor(private usersService: UsersService, private jwtService: JwtService) {}
     
-    async validateUser(username: string, password: string): Promise<any> {
-        const user = await this.usersService.findOneByUsername(username);
+    async validateUser(phoneNumber: string, password: string): Promise<any> {
+        const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
+        console.log("Usuario encontrado: ", user);
         if(user && await bcrypt.compare(password, user.password)) {
             const { password, ...result } = user.toObject();
             return result
+        }else{
+            throw new UnauthorizedException('Credenciales incorrectas');
         }
-        throw new UnauthorizedException('Credenciales incorrectas');
     }
 
     async login(user: any){
