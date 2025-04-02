@@ -17,6 +17,14 @@ async function bootstrap() {
   // Ruta en la cual se sirve la documentación
   SwaggerModule.setup("docs", app, document);
 
+  // habilitación de CORS
+  /*
+  app.enableCors({
+    origin: '*',
+    methods: 'GET, POST, PUT, DELETE',
+    allowedHeaders: 'Content-Type, Authorization'
+  });
+  */
   await app.listen(process.env.PORT ?? 3000);
 }
 

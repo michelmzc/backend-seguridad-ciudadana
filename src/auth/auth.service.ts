@@ -9,6 +9,7 @@ export class AuthService {
     constructor(private usersService: UsersService, private jwtService: JwtService) {}
     
     async validateUser(phoneNumber: string, password: string): Promise<any> {
+        console.log("Buscando al usuario por el número: ", phoneNumber);
         const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
         console.log("Usuario encontrado: ", user);
         if(user && await bcrypt.compare(password, user.password)) {
@@ -22,7 +23,7 @@ export class AuthService {
     async login(user: any){
         const payload = { phoneNumber: user.phoneNumber, sub: user._id };
         return {
-            acces_token: this.jwtService.sign(payload)
+            access_token: this.jwtService.sign(payload)
         };
     }
 
