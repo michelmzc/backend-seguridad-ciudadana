@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schemas';
 import * as bcrypt from 'bcrypt';
 
@@ -43,12 +43,16 @@ export class UsersService {
   }
 
   // en este caso la id es un string para que pueda trabajar con Mongo
-  async findOne(id: string): Promise<User> {
-    const user = await this.userModel.findOne({ _id: id }).exec();
-    if (!user){
+  async findOneById(id: string): Promise<User|null> {
+    try {
+      if (!mongoose.Types.ObjectId.isValid(id)){ //evitar errores mongodb
+        throw new BadGatewayException('Objeto invalido'); 
+      }
+      const user = await this.userModel.findOne({ _id: id }).exec();
+      return user;
+    }catch(error){
       throw new NotFoundException(`Usuario con ID: ${id} no encontrado`);
     }
-    return user;
   }
 
   

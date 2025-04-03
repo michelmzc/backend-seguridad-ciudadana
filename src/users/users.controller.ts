@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from 'src/utilities/parse-object-id-pipe';
 import { CreateCameraDto } from 'src/cameras/dto/create-camera.dto';
-
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('users')
 @ApiTags('Usuario')
@@ -22,17 +22,24 @@ export class UsersController {
     return await this.usersService.findAll(query);
   }
 
+  @UseGuards(AuthGuard) // protege la ruta y extrae el usuario del token
+  @Get('profile')
+  getProfile(@Request() req){
+    console.log("🔍 Token Recibido en Backend:", req.headers.authorization); // Agrega esto
+    console.log("🛡️ Usuario autenticado:", req.user);
+    return req.user; // el usuario ya esta disponible gracias al token
+  }
+
   @Get(':id')
   // incluimos el Pipe que modifica el proceso
-  async findOne(@Param('id', ParseObjectIdPipe) id: string) {
-    return this.usersService.findOne(id);
+  async findOneById(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.usersService.findOneById(id);
   }
   
   @Get(':phoneNumber')
   async findByPhone(@Param('phoneNumber') phoneNumber: string){
     return this.usersService.findOneByPhoneNumber(phoneNumber);
   }
-
 
   @Patch(':id')
   async update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -54,7 +61,8 @@ export class UsersController {
   }
 
   @Get(':id/cameras')
-  getUserWithCameras(@Param('id') userId: string){
+  async getUserWithCameras(@Param('id') userId: string){
     return this.usersService.findOneWithCameras(userId);
   }
+
 }

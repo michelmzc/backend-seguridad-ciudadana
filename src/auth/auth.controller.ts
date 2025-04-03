@@ -10,8 +10,7 @@ export class AuthController{
 
     @Post('login')
     async login(@Body() body){
-        return this.authService.validateUser(body.phoneNumber, body.password)
-        .then(user => this.authService.login(user));
+        return this.authService.login(body.phoneNumber, body.password);
     }
 
     @Post('register')
