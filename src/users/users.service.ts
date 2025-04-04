@@ -55,6 +55,21 @@ export class UsersService {
     }
   }
 
+  // obtener perfil del usuario 
+  async getProfile(id: string): Promise<Object|null> {
+    if (!mongoose.Types.ObjectId.isValid(id)){ //evitar errores mongodb
+      throw new BadGatewayException('Objeto invalido'); 
+    }else{
+      const user = await this.userModel.findOne({ _id: id }).exec();
+      if(user != null){
+        const { password, ...result } = user.toObject();
+        return result 
+      } else {
+        return null;
+      }
+    }
+  }
+  
   
   async update(id: string, updateUserDto: UpdateUserDto) {
     return this.userModel.findOneAndUpdate({ _id: id },

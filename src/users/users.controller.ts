@@ -29,7 +29,7 @@ export class UsersController {
     console.log("🛡️ Usuario autenticado:", req.user);
     
   // `req.user` contiene el payload decodificado del JWT
-    return this.usersService.findOneById(req.user.sub); 
+    return this.usersService.getProfile(req.user.sub); 
   }
 
   @Get(':id')
