@@ -27,7 +27,9 @@ export class UsersController {
   getProfile(@Request() req){
     console.log("🔍 Token Recibido en Backend:", req.headers.authorization); // Agrega esto
     console.log("🛡️ Usuario autenticado:", req.user);
-    return req.user; // el usuario ya esta disponible gracias al token
+    
+  // `req.user` contiene el payload decodificado del JWT
+    return this.usersService.findOneById(req.user.sub); 
   }
 
   @Get(':id')
