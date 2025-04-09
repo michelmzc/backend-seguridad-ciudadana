@@ -60,7 +60,7 @@ export class UsersService {
     if (!mongoose.Types.ObjectId.isValid(id)){ //evitar errores mongodb
       throw new BadGatewayException('Objeto invalido'); 
     }else{
-      const user = await this.userModel.findOne({ _id: id }).exec();
+      const user = await this.userModel.findOne({ _id: id }).populate('cameras').exec();
       if(user != null){
         const { password, ...result } = user.toObject();
         console.log(`Perfil enviado: ${user}`)

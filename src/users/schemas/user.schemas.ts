@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { Document, Types } from 'mongoose'; // importamos desde mongoose
 import { Camera, CameraSchema } from 'src/cameras/schemas/camera.schema';
 
@@ -26,8 +27,8 @@ export class User {
     // relación con las cámaras 
     //  cada usuario tiene un array de ObjectId[] apuntando a Camera
     //  se usa default: [] para evitar valores undefined
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'Camera' }], default: [] })
-    cameras: Types.ObjectId[] | Camera[]; 
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Camera' }] })
+    cameras: Camera[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
