@@ -16,9 +16,6 @@ export class Camera {
     @Prop()
     serial_number: string;
 
-    @Prop([String]) // indicación de tipo no primitivos para prueba
-    keywords: string[];
-
     // dueño(s) de las cámaras (puede ser null si no está asignada)
     @Prop({ type: Types.ObjectId, ref: 'User', default: null})
     owner: Types.ObjectId | User | null;

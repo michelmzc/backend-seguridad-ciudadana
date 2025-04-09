@@ -63,6 +63,7 @@ export class UsersService {
       const user = await this.userModel.findOne({ _id: id }).exec();
       if(user != null){
         const { password, ...result } = user.toObject();
+        console.log(`Perfil enviado: ${user}`)
         return result 
       } else {
         return null;

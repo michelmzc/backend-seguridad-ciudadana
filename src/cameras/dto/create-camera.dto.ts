@@ -11,10 +11,5 @@ export class CreateCameraDto {
     @ApiProperty({ example: "rtsp://example.com"})
     readonly stream_url: string;
 
-    @ApiProperty({
-        example: ['NestJS', 'REST API']
-    })
-    readonly keywords: string []; // ejemplo con un array
-
     readonly owner: User;
 }

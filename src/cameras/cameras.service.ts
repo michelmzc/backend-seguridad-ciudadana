@@ -59,7 +59,7 @@ export class CamerasService {
   // asignar una cámara a un usuario
   async assignCameraToUser(userId: string, cameraId: string){
     const camera = await this.cameraModel.findById(cameraId);
-    if (!camera) throw new NotFoundException(`Camera with ID ${cameraId} not found`);
+    if (!camera) throw new NotFoundException(`Cámara con ID ${cameraId} no encontrado`);
 
     camera.owner = new Types.ObjectId(userId);
 
@@ -67,7 +67,7 @@ export class CamerasService {
 
     await this.userModel.findByIdAndUpdate(userId, { $addToSet: { cameras: cameraId }});
 
-    return { message: `Cámera ${cameraId} asigned to ${userId}`};
+    return { message: `Cámara ${cameraId} asignada al usuario ${userId}`};
   }
 
   async reassignCamera(cameraId: string, newUserId: string) {
