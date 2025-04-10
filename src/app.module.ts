@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.DATABASE_URL || 'mongodb://localhost:27017/seguridad-ciudadana'),
+    MongooseModule.forRoot(process.env.DATABASE_URL || ''),
     AuthModule,
     UsersModule,
     CamerasModule
