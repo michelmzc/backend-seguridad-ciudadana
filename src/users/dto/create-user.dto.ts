@@ -18,6 +18,6 @@ export class CreateUserDto {
     @IsNotEmpty()
     readonly password: string;
   
-    @ApiProperty({ example: 'Spain' })
+    @ApiProperty({ example: 'Chile' })
     readonly country: string;
 }
