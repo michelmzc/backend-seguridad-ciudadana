@@ -4,17 +4,32 @@ import { UpdateReportDto } from './dto/update-report.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Report, ReportDocument } from './schemas/report.schema';
 import { Model, Types } from 'mongoose';
+import { User } from 'src/users/schemas/user.schemas';
 
 @Injectable()
 export class ReportsService {
   constructor(
-    @InjectModel(Report.name) private readonly reportModel:Model<ReportDocument>
+    @InjectModel(Report.name) private readonly reportModel:Model<ReportDocument>,
+    @InjectModel(User.name) private readonly userModel:Model<User>
   ) {}
 
   async create(createReportDto: CreateReportDto): Promise<Report> {
-    return this.reportModel.create(createReportDto);
-  }
+    const userExists = await this.userModel.exists({ _id: createReportDto.user })
+    if (!userExists) {
+      throw new NotFoundException('El usuario no existe')
+    }
 
+    const createdReport = new this.reportModel(createReportDto);
+    const savedReport = await createdReport.save();
+
+    //actualizar usuario para agregar report
+    await this.userModel.findByIdAndUpdate(createReportDto.user, {
+      $push: { reports: savedReport._id }
+    });
+
+    return savedReport;
+  }
+  
   async findAll(query: any): Promise<Report[]> {
     return this.reportModel
     .find(query)
@@ -40,7 +55,17 @@ export class ReportsService {
     return report;
   }
 
-  async remove(id: string) {
-    return this.reportModel.findByIdAndDelete({ _id: id }).exec();
+  async remove(reportId: string): Promise<void> {
+    const report = await this.reportModel.findById(reportId);
+    if (!report){
+      throw new NotFoundException('Reporte no encontrado');
+    }
+    const userId = report.user; 
+
+    await this.reportModel.findByIdAndDelete(reportId);
+
+    await this.userModel.findByIdAndUpdate(userId, {
+      $pull: { reports: reportId }
+    })
   }
 }

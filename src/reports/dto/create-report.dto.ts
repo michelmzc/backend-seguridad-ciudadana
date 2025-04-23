@@ -15,4 +15,9 @@ export class CreateReportDto {
         description: 'Ubicación del reporte'
     })
     readonly location: { lat: number, lon: number }
+
+    @ApiProperty({
+        example: '6626cbbaf4540fadb22df123'
+    })
+    readonly user: string;
 }

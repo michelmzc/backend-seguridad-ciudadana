@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 import { Document, Types } from 'mongoose'; // importamos desde mongoose
 import { Camera, CameraSchema } from 'src/cameras/schemas/camera.schema';
 
@@ -29,6 +29,9 @@ export class User {
     //  se usa default: [] para evitar valores undefined
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Camera' }] })
     cameras: Camera[];
+
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Report' }] })
+    reports: Report[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
