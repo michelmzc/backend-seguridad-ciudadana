@@ -1,11 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { mongo } from 'mongoose';
-import { Document, Types } from 'mongoose'; // importamos desde mongoose
-import { Camera, CameraSchema } from 'src/cameras/schemas/camera.schema';
+import mongoose, { Document, Types } from 'mongoose';
+import { Camera } from 'src/cameras/schemas/camera.schema';
 
 // definición del tipo de documento usuario
 export type UserDocument = User & Document;
-
 
 @Schema()
 export class User {

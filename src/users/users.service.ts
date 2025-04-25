@@ -30,7 +30,7 @@ export class UsersService {
 
     // crear el usuario con la contraseña encriptada
     const newUser = new this.userModel({
-      phoneNumber,
+      ...createUserDto,
       password: hashedPassword
     });
 
