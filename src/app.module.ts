@@ -8,6 +8,7 @@ import { CamerasModule } from './cameras/cameras.module';
 import { AuthModule } from './auth/auth.module';
 import { ReportsModule } from './reports/reports.module';
 import { FirebaseAdminModule } from './firebase/firebase-admin.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 
 @Module({
@@ -18,7 +19,8 @@ import { FirebaseAdminModule } from './firebase/firebase-admin.module';
     UsersModule,
     CamerasModule,
     ReportsModule,
-    FirebaseAdminModule
+    FirebaseAdminModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService],
