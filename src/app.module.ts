@@ -7,6 +7,7 @@ import { UsersModule } from "./users/users.module";
 import { CamerasModule } from './cameras/cameras.module';
 import { AuthModule } from './auth/auth.module';
 import { ReportsModule } from './reports/reports.module';
+import { FirebaseAdminModule } from './firebase/firebase-admin.module';
 
 
 @Module({
@@ -16,7 +17,8 @@ import { ReportsModule } from './reports/reports.module';
     AuthModule,
     UsersModule,
     CamerasModule,
-    ReportsModule
+    ReportsModule,
+    FirebaseAdminModule
   ],
   controllers: [AppController],
   providers: [AppService],

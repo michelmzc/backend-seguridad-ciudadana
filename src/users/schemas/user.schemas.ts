@@ -30,6 +30,15 @@ export class User {
 
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Report' }] })
     reports: Report[];
+
+    @Prop({
+        type: {
+            lat : { type: Number, required: true },
+            lon : { type: Number, required: true }
+        },
+        required: true,
+    })
+    location: { lat: number; lon: number };
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
