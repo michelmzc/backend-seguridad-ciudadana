@@ -1,12 +1,22 @@
-import { Controller, Post, Body, Delete } from '@nestjs/common';
+import { Controller, Post, Req, Body, Delete } from '@nestjs/common';
 import { FcmService } from './fcm.service';
+import { error } from 'console';
 
 @Controller('fcm')
 export class FcmController {
   constructor(private readonly fcmService: FcmService) {}
 
   @Post('register')
-  async register(@Body() body: { userId: string; token: string; platform?: string }) {
+  async register(@Req() req:Request,@Body() body: any) {
+    console.log('FCM Register recibido:', body);
+
+    console.log('>> req.body:', req.body)
+    console.log('>> Headers:', req.headers)
+
+    if (!body || !body.userId || !body.token ){
+      throw new error('Datos FCM incompletos');
+    }
+
     return this.fcmService.registerToken(body.userId, body.token, body.platform);
   }
 
