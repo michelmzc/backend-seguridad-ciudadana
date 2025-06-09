@@ -50,8 +50,15 @@ export class SenderService {
 
   async sendNotificationToToken(token: string, title: string, body: string) {
     const message = {
-      notification: { title, body },
       token,
+      notification: { 
+        "title": title, 
+        "body": body 
+      },
+      data: {
+        "title": title,
+        "body": body 
+      },
     };
 
     try {
