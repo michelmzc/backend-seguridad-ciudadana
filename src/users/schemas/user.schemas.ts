@@ -31,6 +31,7 @@ export class User {
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Report' }] })
     reports: Report[];
 
+    /*
     @Prop({
         type: {
             lat : { type: Number, required: true },
@@ -39,6 +40,26 @@ export class User {
         required: true,
     })
     location: { lat: number; lon: number };
+    */
+
+    @Prop({
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    })
+    location: {
+        type: 'Point';
+        coordinates: [number, number];
+    };
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.index({ location: '2dsphere' });

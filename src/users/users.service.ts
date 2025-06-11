@@ -115,4 +115,17 @@ export class UsersService {
   async findOneByPhoneNumber(phoneNumber: string): Promise<UserDocument | null>{
     return this.userModel.findOne({phoneNumber}).exec();
   }
+
+  async updateLocation(userId: string, lat: number, lon:number){
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        location: {
+          type: 'Point',
+          coordinates: [lon, lat] 
+        }
+      },
+      { new: true }
+    );
+  }
 }

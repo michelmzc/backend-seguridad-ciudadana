@@ -67,4 +67,12 @@ export class UsersController {
     return this.usersService.findOneWithCameras(userId);
   }
 
+  @Patch(':id/location')
+  async updateLocation(
+    @Param('id') userId: string,
+    @Body() body: { lat:number; lon: number }
+  ){
+    return this.usersService.updateLocation(userId, body.lat, body.lon);
+  }
+
 }

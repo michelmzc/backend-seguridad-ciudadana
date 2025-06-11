@@ -12,7 +12,9 @@ export class ReportsController {
 
   @Post()
   async create(@Body() createReportDto: CreateReportDto) {
-    return this.reportsService.create(createReportDto);
+    const report = await this.reportsService.create(createReportDto);
+
+    return report 
   }
 
   @Get()
