@@ -17,6 +17,13 @@ export class FcmService {
     );
   }
 
+  // 👉 Método nuevo para obtener todos los tokens registrados
+  async getAllTokens(): Promise<string[]> {
+    const tokens = await this.fcmModel.find().exec();
+    return tokens.map(t => t.token);
+  }
+
+
   async getTokensByUser(userId: string): Promise<string[]> {
     const docs = await this.fcmModel.find({ userId });
     return docs.map(doc => doc.token);
@@ -31,4 +38,5 @@ export class FcmService {
   async deleteToken(token: string) {
     return this.fcmModel.deleteOne({ token });
   }
+
 }

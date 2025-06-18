@@ -6,16 +6,13 @@ export type NotificationDocument = Notification & Document;
 @Schema({ timestamps: true })
 export class Notification {
     @Prop({ required: true })
-    type: 'emergencia' | 'preventiva';
-
-    @Prop({ required: true })
     title: string;
 
     @Prop({ required: true })
     message: string; 
 
-    @Prop()
-    timestamp: Date;
+    @Prop({ enum:['enum', 'preventiva'], default: 'preventiva' })
+    type: 'emergencia' | 'preventiva';
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);

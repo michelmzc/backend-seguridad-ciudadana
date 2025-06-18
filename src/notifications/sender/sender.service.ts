@@ -1,13 +1,100 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { FcmService } from '../fcm/fcm.service';
+import { Model } from 'mongoose';
+import { Notification, NotificationDocument } from './schema/notifications.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { CreateNotificationDto } from './dto/create-notification.dto';
+import { User, UserDocument } from '../../users/schemas/user.schemas';
+import { getDistance } from 'geolib';
+import { UsersService } from '../../users/users.service';
+import { Types } from 'mongoose';
+function distance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Radio de la Tierra en km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function toRad(value: number): number {
+  return value * Math.PI / 180;
+}
 
 @Injectable()
 export class SenderService {
   private readonly logger = new Logger(SenderService.name);
 
-    // Inyectamos el objeto firebase-admin app o simplemente usamos directamente admin.messaging()
-    constructor(private readonly fcmService: FcmService) {}
+  // Inyectamos el objeto firebase-admin app o simplemente usamos directamente admin.messaging()
+  constructor(
+    @InjectModel(Notification.name)
+    private notificationModel: Model<NotificationDocument>,
+    private readonly fcmService: FcmService,
+    @InjectModel('User') private readonly userModel: Model <UserDocument>,
+    private readonly usersService: UsersService, // ✅ nue
+  ) {}
+  
+  async sendToNearbyUsers(
+  reportLat: number,
+  reportLon: number,
+  title: string,
+  body: string,
+  radiusInMeters = 500,
+  reportingUserId?: string
+) {
+ const users = await this.usersService.getAllUsersWithLocation();
+  
+  const nearbyUserIds = users
+    .filter(user => {
+      const [lon, lat] = user.location.coordinates;
+      const d = distance(lat, lon, reportLat, reportLon);
+      return d <= 1; // en km
+    })
+    .map(user => (user._id as Types.ObjectId).toString())
+    
+      if (reportingUserId && !nearbyUserIds.includes(reportingUserId)) {
+    nearbyUserIds.push(reportingUserId);
+  }
+
+  // Ahora envías la notificación a todos estos usuarios:
+  return this.sendToMultipleUsers(nearbyUserIds, { title, body });
+
+}
+
+  async findAll(){
+    return this.notificationModel.find().sort({ createdAt: -1}).exec();
+  }
+
+  
+  async createAndSend(dto: CreateNotificationDto) {
+    // 1. Guardar en base de datos
+    const notification = await this.notificationModel.create(dto);
+
+    // 2. Obtener todos los tokens
+    const tokens = await this.fcmService.getAllTokens();
+    if (!tokens.length) {
+      this.logger.warn('No tokens registered to send notification');
+      return notification;
+    }
+
+    // 3. Enviar notificación
+    const response = await admin.messaging().sendEachForMulticast({
+      tokens,
+      notification: {
+        title: dto.title,
+        body: dto.message,
+      },
+    });
+
+    this.logger.log(`Notification sent: ${response.successCount} success, ${response.failureCount} failed`);
+    
+    return notification;
+  }
+
 
   private get messaging() {
     return admin.messaging();

@@ -61,9 +61,10 @@ export class UsersService {
       throw new BadGatewayException('Objeto invalido'); 
     }else{
       const user = await this.userModel.findOne({ _id: id }).populate('cameras').exec();
+      console.log("usuario encontrado", user);
       if(user != null){
         const { password, ...result } = user.toObject();
-        console.log(`Perfil enviado: ${user}`)
+        console.log("perfil enviado", user);
         return result 
       } else {
         return null;
@@ -128,4 +129,9 @@ export class UsersService {
       { new: true }
     );
   }
+
+  async getAllUsersWithLocation(): Promise<UserDocument[]> {
+     return this.userModel.find({ location: { $exists: true } }).exec();
+  }
+
 }
