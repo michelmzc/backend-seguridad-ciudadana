@@ -7,6 +7,7 @@ export class SenderController {
 
   @Post('send-test')
   async sendTestNotification(@Body() body: { token: string }) {
+    //console.log(body)
     return this.senderService.sendNotificationToToken(
       body.token,
       'Título de prueba',
