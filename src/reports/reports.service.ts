@@ -5,12 +5,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Report, ReportDocument } from './schemas/report.schema';
 import { Model, Types } from 'mongoose';
 import { User } from 'src/users/schemas/user.schemas';
+import { SenderService } from 'src/notifications/sender/sender.service';
 
 @Injectable()
 export class ReportsService {
   constructor(
     @InjectModel(Report.name) private readonly reportModel:Model<ReportDocument>,
-    @InjectModel(User.name) private readonly userModel:Model<User>
+    @InjectModel(User.name) private readonly userModel:Model<User>,
+    private readonly senderService: SenderService
   ) {}
 
   async create(createReportDto: CreateReportDto): Promise<Report> {
@@ -22,11 +24,24 @@ export class ReportsService {
     const createdReport = new this.reportModel(createReportDto);
     const savedReport = await createdReport.save();
 
-    //actualizar usuario para agregar report
+    // Asociar reporte al usuario
     await this.userModel.findByIdAndUpdate(createReportDto.user, {
       $push: { reports: savedReport._id }
     });
 
+    // Enviar notificación a usuarios cercanos
+      const lng = createReportDto.location.lon;
+      const lat = createReportDto.location.lat;
+      
+      await this.senderService.sendToNearbyUsers(
+        lat,
+        lng,
+        '🚨 Nuevo reporte cercano',
+        createReportDto.text || 'Se ha registrado un nuevo incidente en tu zona',
+        1000, // Radio en metros
+        createReportDto.user.toString()
+      );
+    
     return savedReport;
   }
   

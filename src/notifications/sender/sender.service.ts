@@ -9,6 +9,7 @@ import { User, UserDocument } from '../../users/schemas/user.schemas';
 import { getDistance } from 'geolib';
 import { UsersService } from '../../users/users.service';
 import { Types } from 'mongoose';
+
 function distance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371; // Radio de la Tierra en km
   const dLat = toRad(lat2 - lat1);
@@ -39,31 +40,32 @@ export class SenderService {
   ) {}
   
   async sendToNearbyUsers(
-  reportLat: number,
-  reportLon: number,
-  title: string,
-  body: string,
-  radiusInMeters = 500,
-  reportingUserId?: string
-) {
- const users = await this.usersService.getAllUsersWithLocation();
+    reportLat: number,
+    reportLon: number,
+    title: string,
+    body: string,
+    radiusInMeters = 500,
+    reportingUserId?: string
+  ) {
+    
+    const users = await this.usersService.getAllUsersWithLocation();
   
-  const nearbyUserIds = users
-    .filter(user => {
+    const nearbyUsers = users.filter(user => {
+      if (!user.location?.coordinates) return false;
       const [lon, lat] = user.location.coordinates;
       const d = distance(lat, lon, reportLat, reportLon);
-      return d <= 1; // en km
-    })
-    .map(user => (user._id as Types.ObjectId).toString())
-    
-      if (reportingUserId && !nearbyUserIds.includes(reportingUserId)) {
-    nearbyUserIds.push(reportingUserId);
+      return d <= 1; // 1km
+    });
+
+    const nearbyUserIds = nearbyUsers.map(user => (user._id as Types.ObjectId).toString());
+
+    if (reportingUserId && !nearbyUserIds.includes(reportingUserId)) {
+      nearbyUserIds.push(reportingUserId);
+    }
+
+    console.log("Usuarios a notificar cerca:", nearbyUserIds);
+    await this.sendToMultipleUsers(nearbyUserIds, { title, body });
   }
-
-  // Ahora envías la notificación a todos estos usuarios:
-  return this.sendToMultipleUsers(nearbyUserIds, { title, body });
-
-}
 
   async findAll(){
     return this.notificationModel.find().sort({ createdAt: -1}).exec();
@@ -117,11 +119,12 @@ export class SenderService {
   }
 
   async sendToMultipleUsers(userIds: string[], notification: { title: string; body: string }) {
+    console.log("Enviando notificación a múltiples usuarios ...")
     const tokenSets = await Promise.all(userIds.map(id => this.fcmService.getTokensByUserId(id)));
     const allTokens = tokenSets.flat().filter(Boolean);
 
     if (!allTokens.length) {
-      this.logger.warn(`No tokens found for users`);
+      this.logger.warn(`No se encontrar tokens de usuarios`);
       return { success: 0, failure: 0 };
     }
 
@@ -130,7 +133,7 @@ export class SenderService {
       notification,
     });
 
-    this.logger.log(`Notification sent to multiple users: ${response.successCount} success, ${response.failureCount} failed`);
+    this.logger.log(`Notifcaciones enviados: ${response.successCount} correctos, ${response.failureCount} fallaron`);
 
     return response;
   }
@@ -150,10 +153,10 @@ export class SenderService {
 
     try {
       const response = await admin.messaging().send(message);
-      console.log('Successfully sent message:', response);
+      console.log('Mensaje enviado con éxito:', response);
       return response;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error enviando mensaje', error);
       throw error;
     }
   }

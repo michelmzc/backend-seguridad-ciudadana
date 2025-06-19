@@ -15,7 +15,6 @@ import { UsersModule } from 'src/users/users.module';
     ]),
      MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
      UsersModule
-
   ],
   controllers: [SenderController],
   providers: [SenderService],

@@ -4,5 +4,6 @@ import { SenderModule } from './sender/sender.module';
 
 @Module({
   imports: [FcmModule, SenderModule],
+  exports: [SenderModule]
 })
 export class NotificationsModule {}
