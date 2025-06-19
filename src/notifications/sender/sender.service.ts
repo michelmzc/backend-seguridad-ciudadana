@@ -79,7 +79,7 @@ export class SenderService {
     // 2. Obtener todos los tokens
     const tokens = await this.fcmService.getAllTokens();
     if (!tokens.length) {
-      this.logger.warn('No tokens registered to send notification');
+      this.logger.warn('No existen tokens registrados para enviar notificación');
       return notification;
     }
 
@@ -119,9 +119,15 @@ export class SenderService {
   }
 
   async sendToMultipleUsers(userIds: string[], notification: { title: string; body: string }) {
-    console.log("Enviando notificación a múltiples usuarios ...")
+    console.log("Enviando notificación a múltiples usuarios: ", userIds);
+    
     const tokenSets = await Promise.all(userIds.map(id => this.fcmService.getTokensByUserId(id)));
+    console.log("Tokens obtenidos con las ID de usuario: ", tokenSets);
+    
     const allTokens = tokenSets.flat().filter(Boolean);
+    console.log("Todos los tokens a enviar:", allTokens);
+
+
 
     if (!allTokens.length) {
       this.logger.warn(`No se encontrar tokens de usuarios`);

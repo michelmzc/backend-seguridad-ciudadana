@@ -12,12 +12,12 @@ export class FcmService {
   async registerToken(userId: string, token: string, platform = 'android') {
     return this.fcmModel.findOneAndUpdate(
       { token },
-      { userId, platform },
+      { userId, platform, active: true },
       { upsert: true, new: true }
     );
   }
 
-  // 👉 Método nuevo para obtener todos los tokens registrados
+  // Método nuevo para obtener todos los tokens registrados
   async getAllTokens(): Promise<string[]> {
     const tokens = await this.fcmModel.find().exec();
     return tokens.map(t => t.token);
@@ -33,7 +33,6 @@ export class FcmService {
   const docs = await this.fcmModel.find({ userId, active: true });
   return docs.map(doc => doc.token);
 }
-
 
   async deleteToken(token: string) {
     return this.fcmModel.deleteOne({ token });

@@ -12,6 +12,10 @@ export class FcmToken extends Document {
     @Prop({ default: 'android' }) // o 'ios', según el caso
     platform: string;
 
+    @Prop({ default: true }) // o 'ios', según el caso
+    active: boolean;
+
+
 }
 
 export const FcmTokenSchema = SchemaFactory.createForClass(FcmToken);
