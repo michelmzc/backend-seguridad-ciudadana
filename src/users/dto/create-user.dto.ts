@@ -24,4 +24,10 @@ export class CreateUserDto {
   
     @ApiProperty({ example: 'Chile' })
     readonly country: string;
+
+    @ApiProperty({ example: { type: "Point", lat: -40.5749, lng: -73.1330 }})
+    readonly location?: {
+        type: string,
+        coordinates: number[]
+    }
 }

@@ -44,21 +44,22 @@ export class User {
     */
 
     @Prop({
-        type: {
-            type: String,
-            enum: ['Point'],
-            required: true,
-            default: 'Point'
-        },
-        coordinates: {
-            type: [Number],
-            required: true
-        }
+    type: {
+        type: String,
+        enum: ['Point'],
+        required: true,
+    },
+    coordinates: {
+        type: [Number],
+        required: true,
+        default: [-73.1330, -40.5749], // Coordenadas del centro de Osorno
+    },
     })
     location: {
-        type: 'Point';
-        coordinates: [number, number];
+    type: 'Point';
+    coordinates: [number, number];
     };
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

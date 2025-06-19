@@ -24,13 +24,19 @@ export class UsersService {
     if (existingUser) {
       throw new Error('El número de teléfono ya está registrado.');
     }
-
+    const defaultLocation = {
+      type: "Point",
+      coordinates: [-73.1330, -40.5749] // Osorno: lng, lat
+    };
+    
+  const location = createUserDto.location || defaultLocation;
     // encriptar la contraseña antes de guardarla
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // crear el usuario con la contraseña encriptada
     const newUser = new this.userModel({
       ...createUserDto,
+        location,
       password: hashedPassword
     });
 
