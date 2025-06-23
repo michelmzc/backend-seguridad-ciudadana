@@ -116,28 +116,11 @@ export class CamerasService {
   async getPublicCameras(){
     return this.cameraModel
     .find({ isPublic: true })
-    .populate({ path: 'owner.user' })
+    .populate('owner', 'name location.coordinates')
     .lean();
   }
 
-  // Se ejecuta cada 5 minutos
-  @Cron('*/5 * * * *')
-  async handlePublicCameraExpiration() {
-    const now = new Date();
-    const result = await this.cameraModel.updateMany(
-      {
-        isPublic: true,
-        isPublicUntil: { $lte: now }
-      },
-      {
-        $set: { isPublic: false },
-        $unset: { isPublicUntil: '' }
-      }
-    );
+  
 
-    if (result.modifiedCount > 0) {
-      this.logger.log(`Desactivadas ${result.modifiedCount} cámaras públicas vencidas`);
-    }
-  }
 
 }
