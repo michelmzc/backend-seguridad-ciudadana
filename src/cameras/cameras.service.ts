@@ -1,4 +1,5 @@
-import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { CreateCameraDto } from './dto/create-camera.dto';
 import { UpdateCameraDto } from './dto/update-camera.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,6 +9,8 @@ import { User } from 'src/users/schemas/user.schemas';
 
 @Injectable()
 export class CamerasService {
+
+  private readonly logger = new Logger(CamerasService.name);
   // agregamos un constructor
   constructor(
     // definimos un modelo para libros mediante inyección de dependencias
@@ -115,6 +118,26 @@ export class CamerasService {
     .find({ isPublic: true })
     .populate({ path: 'owner.user' })
     .lean();
+  }
+
+  // Se ejecuta cada 5 minutos
+  @Cron('*/5 * * * *')
+  async handlePublicCameraExpiration() {
+    const now = new Date();
+    const result = await this.cameraModel.updateMany(
+      {
+        isPublic: true,
+        isPublicUntil: { $lte: now }
+      },
+      {
+        $set: { isPublic: false },
+        $unset: { isPublicUntil: '' }
+      }
+    );
+
+    if (result.modifiedCount > 0) {
+      this.logger.log(`Desactivadas ${result.modifiedCount} cámaras públicas vencidas`);
+    }
   }
 
 }

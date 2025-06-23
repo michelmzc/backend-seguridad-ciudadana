@@ -22,6 +22,9 @@ export class Camera {
 
     @Prop({ default: false })
     isPublic: boolean;
+
+    @Prop()
+    publicUntil?: Date; //duración de cámara pública
 }
 
 // esquema Mongoose creado a partir de la clase Camera

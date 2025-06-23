@@ -59,6 +59,17 @@ export class CamerasController {
     return await this.camerasService.remove(id);
   }
 
+  @Post(':id/share')
+  async shareCamera(@Param('id') id: string){
+    const oneHoureLater = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+
+    return this.camerasService.update(id, {
+      isPublic: true, 
+      publicUntil: oneHoureLater
+    });
+
+  }
+
   @Patch(':cameraId/assign/:userId')
   assignCamera(@Param('cameraId') cameraId: string, @Param('userId') userId: string) {
     return this.camerasService.assignCameraToUser(userId, cameraId);
