@@ -110,4 +110,11 @@ export class CamerasService {
 
   }
 
+  async getPublicCameras(){
+    return this.cameraModel
+    .find({ isPublic: true })
+    .populate({ path: 'owner.user' })
+    .lean();
+  }
+
 }
