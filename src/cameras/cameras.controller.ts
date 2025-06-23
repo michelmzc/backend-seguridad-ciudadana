@@ -63,4 +63,9 @@ export class CamerasController {
     return this.camerasService.reassignCamera(cameraId, newUserId);
   }
 
+  @Get('/public')
+  @ApiOperation({ summary: 'Obtener cámaras públicas'})
+  async getPublicCameras(){
+    return this.camerasService.getPublicCameras()
+  }
 }
