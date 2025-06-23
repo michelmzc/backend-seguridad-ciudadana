@@ -25,6 +25,12 @@ export class CamerasController {
     return await this.camerasService.findAll(query);
   }
 
+  @Get('/public')
+  @ApiOperation({ summary: 'Obtener cámaras públicas'})
+  async getPublicCameras(){
+    return this.camerasService.getPublicCameras()
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Obtener una cámara por ID' })
   @ApiResponse({ status: 200, description: 'Cámara encontrada' })
@@ -63,9 +69,5 @@ export class CamerasController {
     return this.camerasService.reassignCamera(cameraId, newUserId);
   }
 
-  @Get('/public')
-  @ApiOperation({ summary: 'Obtener cámaras públicas'})
-  async getPublicCameras(){
-    return this.camerasService.getPublicCameras()
-  }
+  
 }
