@@ -14,5 +14,6 @@ import { UsersModule } from 'src/users/users.module';
   ],
   controllers: [CamerasController],
   providers: [CamerasService],
+  exports: [CamerasService]
 })
 export class CamerasModule {}

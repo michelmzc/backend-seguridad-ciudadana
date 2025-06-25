@@ -1,5 +1,5 @@
 import { ForbiddenException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule'
 import { CreateCameraDto } from './dto/create-camera.dto';
 import { UpdateCameraDto } from './dto/update-camera.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -121,6 +121,31 @@ export class CamerasService {
   }
 
   
+  @Cron('*/1 * * * *') // cada minuto
+  async handleExpiredPublicCameras() {
+    console.log("Ejecutando Cron ...")
+    const now = new Date();
+
+    const result = await this.cameraModel.updateMany(
+      {
+        isPublic: true,
+        publicUntil: { $lt: now },
+      },
+      {
+        $set: { isPublic: false },
+      }
+    );
+
+    if (result.modifiedCount > 0) {
+      this.logger.log(`Cámaras vencidas ocultadas: ${result.modifiedCount}`);
+    }
+  }
+
+  @Cron('* * * * *')  // cada minuto
+  handleCron() {
+    console.log('🕒 Cron corriendo...');
+  }
+
 
 
 }
